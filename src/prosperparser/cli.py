@@ -1,11 +1,13 @@
 """CLI for calling into parse"""
 
+import pathlib
 from dataclasses import dataclass
 from typing import Annotated, TextIO
 
 import cappa
+import pyfastx
 
-from . import constants, parse
+from . import cleave, constants, parse
 
 
 def valid_thresh(value: float):
@@ -33,6 +35,17 @@ def valid_protease(value: list[str]):
             msg = f"invalid protease at {i}"
             raise ValueError(msg)
     return validated
+
+def valid_fasta(value: pathlib.Path) -> pyfastx.Fasta:
+    try:
+        fasta = pyfastx.Fasta(value)
+    except RuntimeError as ex:
+        msg = "pyfastx error: " + str(ex)
+        raise ValueError(msg) from ex
+    if fasta.type == "protein":
+        return fasta
+    msg = "Not a protein FASTA"
+    raise ValueError(msg)
 
 
 @dataclass
@@ -71,7 +84,22 @@ class ProsperParser:
     ] = None
     """Probability score cutoff"""
 
+    fasta: Annotated[
+        None | pyfastx.Fasta,
+        cappa.Arg(short="-f", long=True, parse=[valid_fasta]),
+    ] = None
+    """FASTA file containing sequences. If given, will return result of protein cleavage rather than csv. Requires sequence."""
+
 
 def run():
     args = cappa.parse(ProsperParser)
-    parse.parse_csv(args)
+    results = parse.parse_csv(args)
+    if args.fasta is None:
+        if args.output:
+            results.to_csv(args.output)
+        print(results)  # noqa: T201
+    else:
+        seq: list[str] = cleave.cleave(args, results)
+        if args.output:
+            args.output.write(repr(seq))
+        print(seq)  # noqa: T201

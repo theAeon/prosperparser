@@ -33,6 +33,7 @@ dependencies = [
     "cappa>=0.31.0",
     "pandas>=3",
     "pandas-stubs>=2.3.3.260113",
+    "pyfastx>=2.3.0",
 ]
 
 [project.urls]

@@ -1,9 +1,10 @@
 """CSV parsing logic for ProsperousPlus"""
 
 import pandas as pd
+from pandas import DataFrame
 
 
-def parse_csv(args):
+def parse_csv(args) -> DataFrame:
     results = pd.read_csv(args.input)
     results = results[results["prediction"] == 1]
     if args.threshold:
@@ -18,6 +19,5 @@ def parse_csv(args):
         results = results_group.head(args.top).sort_values("sequence_id")
     else:
         results = results.sort_values("sequence_id")
-    if args.output:
-        results.to_csv(args.output)
-    print(results)  # noqa: T201
+    return results
+
