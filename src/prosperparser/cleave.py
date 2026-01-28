@@ -4,10 +4,6 @@
 from pandas import DataFrame
 
 
-def flatten(list):
-    for item in list:
-        yield from item
-
 def search(masterlist, query):
     found_any = False
     newmasterlist = []
