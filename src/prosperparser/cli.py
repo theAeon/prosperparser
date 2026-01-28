@@ -39,7 +39,7 @@ class ProsperParser:
     input: Annotated[TextIO, cappa.Arg.required, cappa.FileMode(mode = "r", encoding = "utf-8")]
     """results.csv from ProsperousPlus"""
 
-    output: Annotated[None | TextIO, cappa.Arg(default = None), cappa.FileMode(mode = "wb", encoding = "utf-8")]
+    output: Annotated[None | TextIO, cappa.Arg(default = None), cappa.FileMode(mode = "w", encoding = "utf-8")]
     """file to write output"""
 
     protease: Annotated[
