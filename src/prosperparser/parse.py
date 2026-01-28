@@ -9,7 +9,7 @@ def parse_csv(args):
     if args.threshold:
         results = results[results["pro"] >= args.threshold]
     if args.protease:
-        results = results[results["protease"] == args.protease]
+        results = results[results["protease"].isin(args.protease)]
     if args.sequence:
         results = results[results["sequence_id"] == args.sequence]
     results = results.sort_values("pro", ascending = False)

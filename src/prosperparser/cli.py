@@ -22,13 +22,17 @@ def gt_zero(value: int):
     return value
 
 
-def valid_protease(value: str):
-    if value in constants.ids:
-        return value
-    if value in constants.names:
-        return constants.dict_map[value]
-    msg = "invalid protease"
-    raise ValueError(msg)
+def valid_protease(value: list[str]):
+    validated: list[str] = []
+    for i in range(len(value)):
+        if value[i] in constants.ids:
+            validated.append(value[i])
+        elif value[i] in constants.names:
+            validated.append(constants.dict_map[value[i]])
+        else:
+            msg = f"invalid protease at {i}"
+            raise ValueError(msg)
+    return validated
 
 
 @dataclass
@@ -43,8 +47,8 @@ class ProsperParser:
     """file to write output"""
 
     protease: Annotated[
-        None | str,
-        cappa.Arg(parse=[cappa.default_parse, valid_protease], short="-p", long=True),
+        None | list[str],
+        cappa.Arg(parse=[cappa.default_parse, valid_protease], action = cappa.ArgAction.append, short="-p", long=True),
     ]
     """full protein name or merops id from table S1"""
 
