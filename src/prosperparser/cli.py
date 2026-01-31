@@ -10,21 +10,21 @@ import pyfastx
 from . import cleave, constants, parse
 
 
-def valid_thresh(value: float):
+def valid_thresh(value: float) -> float:
     if 0 <= value <= 1:
         return value
     msg = "threshold must be a decimal probability"
     raise ValueError(msg)
 
 
-def gt_zero(value: int):
+def gt_zero(value: int) -> int:
     if value <= 0:
         msg = "top must be more than zero"
         raise ValueError(msg)
     return value
 
 
-def valid_protease(value: list[str]):
+def valid_protease(value: list[str]) -> list[str]:
     validated: list[str] = []
     for i in range(len(value)):
         if value[i] in constants.ids:
@@ -38,7 +38,7 @@ def valid_protease(value: list[str]):
 
 def valid_fasta(value: pathlib.Path) -> pyfastx.Fasta:
     try:
-        fasta = pyfastx.Fasta(value)
+        fasta: pyfastx.Fasta = pyfastx.Fasta(value)
     except RuntimeError as ex:
         msg = "pyfastx error: " + str(ex)
         raise ValueError(msg) from ex
@@ -94,12 +94,13 @@ class ProsperParser:
 def run():
     args = cappa.parse(ProsperParser)
     results = parse.parse_csv(args)
-    if args.fasta is None:
-        if args.output:
-            results.to_csv(args.output)
-        print(results)  # noqa: T201
-    else:
+    if args.fasta is not None:
         seq: list[str] = cleave.cleave(args, results)
         if args.output:
             args.output.write(repr(seq))
         print(seq)  # noqa: T201
+    else:
+        if args.output:
+            results.to_csv(args.output)
+        print(results)  # noqa: T201
+

@@ -3,8 +3,11 @@
 import pandas as pd
 from pandas import DataFrame
 
+TYPE_CHECKING = False
+if TYPE_CHECKING:
+    from .cli import ProsperParser  # noqa: TC004
 
-def parse_csv(args) -> DataFrame:
+def parse_csv(args: ProsperParser) -> DataFrame:
     results = pd.read_csv(args.input)
     results = results[results["prediction"] == 1]
     if args.threshold:
