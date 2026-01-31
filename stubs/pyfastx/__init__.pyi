@@ -1,6 +1,6 @@
 from collections.abc import Callable, Collection
 from pathlib import Path
-from typing import Literal, Self
+from typing import Literal, Self, overload
 
 __version__: str
 
@@ -15,13 +15,17 @@ class Sequence(Collection):
 
     def __next__(self) -> str: ...
 
+    @overload
     def __getitem__(self, key: int) -> str: ...
+
+    @overload
+    def __getitem__(self, key: slice) -> Sequence: ...
 
     def __len__(self) -> int: ...
 
     def __contains__(self, x: object) -> bool: ...
 
-    def search(self, subseq: str, strand: Literal["+", "-"] = "+") -> int: ...
+    def search(self, subseq: str, strand: Literal["+", "-"] = "+") -> int | None: ...
 
     id: int
     name: str
