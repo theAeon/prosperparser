@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
     from .cli import ProsperParser
 
+
 def search(masterlist: list[Sequence], query: str) -> tuple[list[Sequence], bool]:
     found_any = False
     newmasterlist: list[Sequence] = []
@@ -26,6 +27,7 @@ def search(masterlist: list[Sequence], query: str) -> tuple[list[Sequence], bool
         newmasterlist.append(target)
     return newmasterlist, found_any
 
+
 def cleave(args: ProsperParser, results: pd.DataFrame) -> set[str]:
     if args.fasta is not None:
         if args.sequence is not None:
@@ -35,7 +37,7 @@ def cleave(args: ProsperParser, results: pd.DataFrame) -> set[str]:
             for query in results["seqs"].drop_duplicates().array:
                 a: int | None = seq.search(query)
                 while a is not None:
-                    masterlist.append(seq[:a-1])
+                    masterlist.append(seq[: a - 1])
                     seq = seq[a + len(query) - 1 :]
                     a = seq.search(query)
                 masterlist.append(seq)

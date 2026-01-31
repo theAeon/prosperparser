@@ -36,6 +36,7 @@ def valid_protease(value: list[str]) -> list[str]:
             raise ValueError(msg)
     return validated
 
+
 def valid_fasta(value: pathlib.Path) -> pyfastx.Fasta:
     try:
         fasta: pyfastx.Fasta = pyfastx.Fasta(value)
@@ -53,15 +54,26 @@ class ProsperParser:
     """ProsperParser
     A program for parsing ProsperousPlus outputs"""
 
-    input: Annotated[TextIO, cappa.Arg.required, cappa.FileMode(mode = "r", encoding = "utf-8")]
+    input: Annotated[
+        TextIO, cappa.Arg.required, cappa.FileMode(mode="r", encoding="utf-8")
+    ]
     """results.csv from ProsperousPlus"""
 
-    output: Annotated[None | TextIO, cappa.Arg(default = None), cappa.FileMode(mode = "w", encoding = "utf-8")]
+    output: Annotated[
+        None | TextIO,
+        cappa.Arg(default=None),
+        cappa.FileMode(mode="w", encoding="utf-8"),
+    ]
     """file to write output"""
 
     protease: Annotated[
         None | list[str],
-        cappa.Arg(parse=[cappa.default_parse, valid_protease], action = cappa.ArgAction.append, short="-p", long=True),
+        cappa.Arg(
+            parse=[cappa.default_parse, valid_protease],
+            action=cappa.ArgAction.append,
+            short="-p",
+            long=True,
+        ),
     ]
     """full protein name or merops id from table S1"""
 
@@ -103,4 +115,3 @@ def run():
         if args.output:
             results.to_csv(args.output)
         print(results)  # noqa: T201
-
