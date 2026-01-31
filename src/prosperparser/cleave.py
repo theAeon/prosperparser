@@ -26,7 +26,7 @@ def search(masterlist: list[Sequence], query: str) -> tuple[list[Sequence], bool
         newmasterlist.append(target)
     return newmasterlist, found_any
 
-def cleave(args: ProsperParser, results: pd.DataFrame) -> list[str]:
+def cleave(args: ProsperParser, results: pd.DataFrame) -> set[str]:
     if args.fasta is not None:
         if args.sequence is not None:
             seq: Sequence = args.fasta[args.sequence]
@@ -47,6 +47,6 @@ def cleave(args: ProsperParser, results: pd.DataFrame) -> list[str]:
                     to_search.reverse()
                     to_search.append(search_next)
                     to_search.reverse()
-            return [masterlist[i].seq for i in range(len(masterlist))]
+            return {masterlist[i].seq for i in range(len(masterlist))}
         raise TypeError(args.sequence)
     raise TypeError(args.fasta)

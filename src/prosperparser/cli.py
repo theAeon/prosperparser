@@ -95,7 +95,7 @@ def run():
     args = cappa.parse(ProsperParser)
     results = parse.parse_csv(args)
     if args.fasta is not None:
-        seq: list[str] = cleave.cleave(args, results)
+        seq: set[str] = cleave.cleave(args, results)
         if args.output:
             args.output.write(repr(seq))
         print(seq)  # noqa: T201
