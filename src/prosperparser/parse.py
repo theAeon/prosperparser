@@ -1,13 +1,14 @@
 """CSV parsing logic for ProsperousPlus"""
 
+from __future__ import annotations
+
 import pandas as pd
-from pandas import DataFrame
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
-    from .cli import ProsperParser  # noqa: TC004
+    from .cli import ProsperParser
 
-def parse_csv(args: ProsperParser) -> DataFrame:
+def parse_csv(args: ProsperParser) -> pd.DataFrame:
     results = pd.read_csv(args.input)
     results = results[results["prediction"] == 1]
     if args.threshold:

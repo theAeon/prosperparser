@@ -1,13 +1,13 @@
 """Sequence cleaving logic for ProsperParser"""
 
-
-from pandas import DataFrame
+from __future__ import annotations
 
 TYPE_CHECKING = False
 if TYPE_CHECKING:
+    import pandas as pd
     from pyfastx import Sequence
 
-    from .cli import ProsperParser  # noqa: TC004
+    from .cli import ProsperParser
 
 def search(masterlist, query):
     found_any = False
@@ -24,11 +24,11 @@ def search(masterlist, query):
         newmasterlist.append(target)
     return newmasterlist, found_any
 
-def cleave(args: ProsperParser, results: DataFrame) -> list[str]:
+def cleave(args: ProsperParser, results: pd.DataFrame) -> list[str]:
     if args.fasta is not None:
         if args.sequence is not None:
             seq: Sequence = args.fasta[args.sequence]
-            masterlist = []
+            masterlist: list[Sequence] = []
             for query in results["seqs"].drop_duplicates().array:
                 a = seq.search(query)
                 while a is not None:
@@ -44,8 +44,6 @@ def cleave(args: ProsperParser, results: DataFrame) -> list[str]:
                     to_search.reverse()
                     to_search.append(search_next)
                     to_search.reverse()
-            for i in range(len(masterlist)):
-                masterlist[i] = masterlist[i].seq
-            return masterlist
+            return [masterlist[i].seq for i in range(len(masterlist))]
         raise TypeError(args.sequence)
     raise TypeError(args.fasta)
